@@ -1,0 +1,369 @@
+<resources>
+    <string name="app_name">Nation G2 Scanner</string>
+    <string name="title_inventory">Inventory</string>
+    <string name="title_write">Write</string>
+    <string name="title_bind">Bind</string>
+    <string name="title_find">Find</string>
+    <string name="title_setting">Setting</string>
+
+    <string name="index">#</string>
+    <string name="epc">EPC</string>
+    <string name="tid">TID</string>
+    <string name="user">User</string>
+    <string name="reserved">Reserved</string>
+    <string name="tag_count">Count</string>
+
+    <string name="read_btn">Inventory</string>
+    <string name="stop_btn">Stop</string>
+    <string name="clean_btn">Clear</string>
+
+    <string name="tag_total">Total：</string>
+    <string name="tag_speed">Speed：</string>
+    <string name="tag_readTime">Time：</string>
+
+    <string name="tag_match_area">Match:</string>
+    <string name="tag_match_content">Content:</string>
+    <string name="bind_goods">BindGoods:</string>
+    <string name="select_label">selectLabel:</string>
+    <string name="bind_btn">Bind</string>
+    <string name="goods_table_title">goods</string>
+    <string name="clear_bind">ClearBind</string>
+    <string name="match_label">MatchLabel:</string>
+    <string name="write_area">WriteArea:</string>
+    <string name="write_address">WriteAddress:</string>
+    <string name="access_pwd">AccessPwd:</string>
+    <string name="write_content">WriteContent:</string>
+    <string name="write_card_btn">Write</string>
+    <string name="lock_area">LockArea:</string>
+    <string name="lock_type">LockType:</string>
+    <string name="lock_btn">Lock</string>
+    <string name="kill_pwd">KillPwd:</string>
+    <string name="kill_btn">Kill</string>
+    <string name="version_info_title">VersionInfo</string>
+    <string name="base_version">BaseVersion：</string>
+    <string name="base_compileTime">BaseCompile：</string>
+    <string name="serial_no">SerialNo：</string>
+    <string name="power_time">PowerTime：</string>
+    <string name="query_btn">Query</string>
+    <string name="read_setting_title">ReadSetting</string>
+    <string name="label_type">LabelType：</string>
+    <string name="tid_len">len</string>
+    <string name="read_userdata">UserData：</string>
+    <string name="user_start">start</string>
+    <string name="user_len">len</string>
+    <string name="read_reserved">Reserved：</string>
+    <string name="reserved_start">start</string>
+    <string name="reserved_len">len</string>
+    <string name="module_power">ModulePower</string>
+    <string name="set_btn">Set</string>
+    <string name="base_param">BaseParam</string>
+    <string name="base_speed">speed:</string>
+    <string name="q_value">QValue:</string>
+    <string name="ab_flag">AbFlag:</string>
+    <string name="auto_freetime">AutoFree</string>
+    <string name="work_frequnecy">WorkFrequency</string>
+    <string name="scan_btn">Scan</string>
+    <string name="menu_export">Export</string>
+    <string name="toast_open_serial">open serial failed</string>
+    <string name="bind_hint_1">Please read the card first before binding it</string>
+    <string name="bind_hint_2">The item name cannot be empty</string>
+    <string name="bind_hint_3">Binding successful</string>
+    <string name="bind_hint_4">Hint</string>
+    <string name="bind_hint_5">Please confirm whether to clear all bound data?</string>
+    <string name="bind_hint_6">confirm</string>
+    <string name="find_hint_1">Failed to enable scanning</string>
+    <string name="find_hint_2">Stop scanning failed</string>
+    <string name="setting_hint_1">Time cannot be empty</string>
+    <string name="write_hint_1">mismatching</string>
+    <string name="write_hint_2">The starting address cannot be empty</string>
+    <string name="write_hint_3">The written content cannot be empty</string>
+    <string name="write_hint_4">Access password cannot be empty</string>
+    <string name="write_hint_5">The deactivation password cannot be empty</string>
+    <string name="menu_standing_wave">StandingWave</string>
+    <string name="menu_other">Other</string>
+    <string name="match_tid_6b">MatchTID:</string>
+    <string name="lock_address_6b">Lock(byte):</string>
+    <string name="lock_query_btn">LockQuery</string>
+    <string name="user_start_6b">start(byte):</string>
+    <string name="user_len_6b">len(byte):</string>
+    <string name="write_6b_hint_1">Please read the card first before selecting TID to write the card</string>
+    <string name="inventory_mode">InventoryMode:</string>
+    <string name="safe_pwd">SafePwd:</string>
+    <string name="protocol_selection">ProtocolSelection</string>
+    <string name="carrier">Carrier</string>
+    <string name="frequency_point">FrequencyPoint:</string>
+    <string name="standing_wave_detection">Standing wave detection</string>
+    <string name="forward_power">ForwardPower:</string>
+    <string name="backward_power">BackwardPower:</string>
+    <string name="detection">Detection</string>
+    <string name="resetting">Resetting</string>
+    <string name="restore_factory_settings">RestoreFactorySettings</string>
+    <string name="other_hint1">Hint</string>
+    <string name="other_hint2">Please confirm if you want to reset the module?</string>
+    <string name="other_hint3">Please select [Frequency] first, then click [Carrier], and then click [Detection]</string>
+    <string name="stop_inventory_hint">Please stop the inventory first</string>
+    <string name="upload_param">UploadParam</string>
+    <string name="filter_time">FilterTime:</string>
+    <string name="rssi_threshold">RSSIThreshold:</string>
+    <string name="menu_frequency_hopping">FrequencyHopping</string>
+    <string name="frequency_hopping_management">Frequency hopping management</string>
+    <string name="base_upgrade">Upgrade</string>
+    <string name="select_upgrade">Please select upgrade file</string>
+    <string name="upgrading">upgrading....</string>
+    <string name="upgrade_hint1">Please select the correct file</string>
+    <string name="upgrade_hint2">Upgrade error, stop upgrading</string>
+    <string name="upgrade_hint3">Upgrade start frame retry failed twice</string>
+    <string name="upgrade_hint4">Sending end frame failed</string>
+    <string name="upgrade_hint5">Upgrade completed, start restarting</string>
+    <string name="baudrate">BaudRate</string>
+    <string name="back_exit">Press again to exit</string>
+    <string name="upBase_permission_name">read-write</string>
+    <string name="upBase_permission_title">Permission Description</string>
+    <string name="upBase_permission_msg">Permission to read the upgrade file</string>
+    <string name="tl_tag_type_fmo">FM0(Default FSK)</string>
+    <string name="setting_jgb_Anti_collision">Anti-collision:</string>
+    <string name="lock_6b_query">Address(byte):</string>
+
+
+    <string-array name="setting_tid">
+        <item>Auto</item>
+        <item>Fixed</item>
+    </string-array>
+
+    <string-array name="setting_power">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+    </string-array>
+
+    <string-array name="setting_base">
+        <item>0|Tari=25us,FM0,LHF=40KHz</item>
+        <item>1|Tari=25us,Miller4,LHF=250KHz</item>
+        <item>2|Tari=25us,Miller4,LHF=300KHz</item>
+        <item>3|Tari=6.25us,FM0,LHF=400KHz</item>
+        <item>4|Tari=25us,Miller4,LHF=320KHz</item>
+        <item>5|Tari=6.25us，FM0，LHF=640KHz</item>
+        <item>6|Tari=20us，Miller4，LHF=320KHz</item>
+        <item>7|Tari=6.25us，Miller4，LHF=400KHz</item>
+        <item>10|Tari=12.5us,Miller4,LHF=250KHz</item>
+        <item>11|Tari=6.25us,Miller4,LHF=250KHz</item>
+        <item>12|Tari=12.5us,Miller4,LHF=300KHz</item>
+        <item>13|Tari=6.25us,Miller4,LHF=300KHz</item>
+        <item>255|Auto</item>
+    </string-array>
+    <string-array name="setting_session">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="setting_qValue">
+        <item>single</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>many</item>
+    </string-array>
+    <string-array name="setting_inventoryMode">
+        <item>A</item>
+        <item>B</item>
+        <item>AB</item>
+    </string-array>
+
+    <string-array name="setting_switch">
+        <item>close</item>
+        <item>open</item>
+    </string-array>
+
+    <string-array name="setting_frequent">
+        <item>Gb920_925</item>
+        <item>Gb840_845</item>
+        <item>Gb840_845_920_925</item>
+        <item>FCC902_928</item>
+        <item>ETS|866_868</item>
+        <item>JP916_8_920_4</item>
+        <item>TW922_25_927_75</item>
+        <item>ID923_125_925_125</item>
+        <item>RUS866_6_867_4</item>
+        <item>TEST</item>
+        <item>JP_LBT,916.8~920.8MHz</item>
+    </string-array>
+
+    <string-array name="write_area">
+        <item>EPC</item>
+        <item>UserData</item>
+        <item>AccessPwd</item>
+        <item>KillPwd</item>
+    </string-array>
+
+    <string-array name="lock_area">
+        <item>KillPwd</item>
+        <item>AccessPwd</item>
+        <item>EPC</item>
+        <item>TID</item>
+        <item>UserData</item>
+    </string-array>
+
+    <string-array name="lock_type">
+        <item>Unlock</item>
+        <item>Lock</item>
+        <item>ForeverUnlock</item>
+        <item>ForeverLock</item>
+    </string-array>
+
+    <string-array name="match_area">
+        <item>None</item>
+        <item>EPC</item>
+        <item>TID</item>
+        <item>UserData</item>
+    </string-array>
+
+    <string-array name="match_area_gjb">
+        <item>None</item>
+        <item>TID</item>
+        <item>EPC</item>
+        <item>Safe</item>
+        <item>UserData</item>
+    </string-array>
+
+    <string-array name="write_area_gjb">
+        <item>EPC</item>
+        <item>Safe</item>
+        <item>UserData</item>
+    </string-array>
+
+    <string-array name="write_safe_gjb">
+        <item>KillPwd</item>
+        <item>LockPwd</item>
+        <item>ReadPwd</item>
+        <item>WritePwd</item>
+    </string-array>
+
+    <string-array name="lock_area_gjb">
+        <item>TID</item>
+        <item>EPC</item>
+        <item>Safe</item>
+        <item>UserData</item>
+    </string-array>
+
+    <string-array name="lock_type_gjb">
+        <item>Readable and writable</item>
+        <item>Readable and UnWritable</item>
+        <item>Unreadable and Writable</item>
+        <item>Unreadable and UnWritable</item>
+    </string-array>
+
+    <string-array name="gb_user_child">
+        <item>UserChild0</item>
+        <item>UserChild1</item>
+        <item>UserChild2</item>
+        <item>UserChild3</item>
+        <item>UserChild4</item>
+        <item>UserChild5</item>
+        <item>UserChild6</item>
+        <item>UserChild7</item>
+        <item>UserChild8</item>
+        <item>UserChild9</item>
+        <item>UserChild10</item>
+        <item>UserChild11</item>
+        <item>UserChild12</item>
+        <item>UserChild13</item>
+        <item>UserChild14</item>
+        <item>UserChild15</item>
+    </string-array>
+
+    <string-array name="write_area_gb">
+        <item>EPC</item>
+        <item>安全区</item>
+        <item>UserChild0</item>
+        <item>UserChild1</item>
+        <item>UserChild2</item>
+        <item>UserChild3</item>
+        <item>UserChild4</item>
+        <item>UserChild5</item>
+        <item>UserChild6</item>
+        <item>UserChild7</item>
+        <item>UserChild8</item>
+        <item>UserChild9</item>
+        <item>UserChild10</item>
+        <item>UserChild11</item>
+        <item>UserChild12</item>
+        <item>UserChild13</item>
+        <item>UserChild14</item>
+        <item>UserChild15</item>
+    </string-array>
+
+    <string-array name="lock_area_gb">
+        <item>TID</item>
+        <item>EPC</item>
+        <item>Safe</item>
+        <item>UserChild0</item>
+        <item>UserChild1</item>
+        <item>UserChild2</item>
+        <item>UserChild3</item>
+        <item>UserChild4</item>
+        <item>UserChild5</item>
+        <item>UserChild6</item>
+        <item>UserChild7</item>
+        <item>UserChild8</item>
+        <item>UserChild9</item>
+        <item>UserChild10</item>
+        <item>UserChild11</item>
+        <item>UserChild12</item>
+        <item>UserChild13</item>
+        <item>UserChild14</item>
+        <item>UserChild15</item>
+    </string-array>
+
+    <string-array name="write_safe_gb">
+        <item>KillPwd</item>
+        <item>LockPwd</item>
+    </string-array>
+
+    <string-array name="frequency_mode">
+        <item>Fixed Frequency </item>
+        <item>Auto Frequency</item>
+    </string-array>
+
+    <string-array name="baudrate">
+        <item>9600</item>
+        <item>19200</item>
+        <item>115200</item>
+        <item>230400</item>
+        <item>460800</item>
+        <item>921600</item>
+    </string-array>
+
+
+</resources>

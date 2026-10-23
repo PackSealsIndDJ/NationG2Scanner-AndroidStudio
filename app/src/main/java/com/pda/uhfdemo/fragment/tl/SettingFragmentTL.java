@@ -1,0 +1,281 @@
+package com.pda.uhfdemo.fragment.tl;
+
+import android.bld.DeviceManager;
+import android.content.Context;
+import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
+import com.gg.reader.api.dal.GClient;
+import com.gg.reader.api.protocol.gx.MsgAppGetBaseVersion;
+import com.gg.reader.api.protocol.gx.MsgAppGetReaderInfo;
+import com.gg.reader.api.protocol.gx.MsgBaseGetBaseband;
+import com.gg.reader.api.protocol.gx.MsgBaseGetPower;
+import com.gg.reader.api.protocol.gx.MsgBaseSetBaseband;
+import com.gg.reader.api.protocol.gx.MsgBaseSetPower;
+import com.gg.reader.api.protocol.gx.MsgBaseStop;
+import com.pda.uhfdemo.R;
+import com.pda.uhfdemo.utils.AppUtils;
+import com.pda.uhfdemo.utils.GlobalClient;
+import com.pda.uhfdemo.utils.QrCodeUtils;
+import com.pda.uhfdemo.utils.Toast;
+import com.tencent.mmkv.MMKV;
+
+import java.util.Hashtable;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class SettingFragmentTL extends Fragment {
+
+    @BindView(R.id.set_power_spinner)
+    Spinner set_power_spinner;
+    @BindView(R.id.set_base_speed)
+    Spinner set_base_speed;
+    @BindView(R.id.set_base_session)
+    Spinner set_base_session;
+    @BindView(R.id.set_base_qValue)
+    Spinner set_base_qValue;
+    @BindView(R.id.set_base_ab)
+    Spinner set_base_ab;
+    @BindView(R.id.set_info_baseVersion)
+    TextView set_info_baseVersion;
+    @BindView(R.id.set_info_serialNo)
+    TextView set_info_serialNo;
+
+    @BindView(R.id.set_info_powerTime)
+    TextView set_info_powerTime;
+
+    @BindView(R.id.radioGroup)
+    RadioGroup radioGroup;
+
+    @BindView(R.id.version_Layout)
+    LinearLayout version_Layout;
+
+    @BindView(R.id.set_info_baseCompareTime)
+    TextView set_info_baseCompareTime;
+    @BindView(R.id.set_tl_tagType_box)
+    CheckBox set_tl_tagType_box;
+
+    GClient client = GlobalClient.getClient();
+
+    MMKV mmkv = MMKV.defaultMMKV();
+
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_setting_tl, container, false);
+        ButterKnife.bind(this, view);
+        initListener();
+        initTagProtocol();
+        return view;
+    }
+
+    private void initTagProtocol() {
+        int tagProtocol = mmkv.decodeInt("set_tag_protocol", 0);
+        switch (tagProtocol) {
+            case 0:
+                radioGroup.check(R.id.radio_6c);
+                break;
+            case 1:
+                radioGroup.check(R.id.radio_6b);
+                break;
+            case 2:
+                radioGroup.check(R.id.radio_gb);
+                break;
+            case 3:
+                radioGroup.check(R.id.radio_gjb);
+                break;
+            case 4:
+                radioGroup.check(R.id.radio_tl);
+                break;
+        }
+        radioGroup.setOnCheckedChangeListener((radio, i) -> {
+            switch (i) {
+                case R.id.radio_6c:
+                    mmkv.encode("set_tag_protocol", 0);
+                    AppUtils.reset(getActivity());
+                    break;
+                case R.id.radio_6b:
+                    mmkv.encode("set_tag_protocol", 1);
+                    AppUtils.reset(getActivity());
+                    break;
+                case R.id.radio_gb:
+                    mmkv.encode("set_tag_protocol", 2);
+                    AppUtils.reset(getActivity());
+                    break;
+                case R.id.radio_gjb:
+                    mmkv.encode("set_tag_protocol", 3);
+                    AppUtils.reset(getActivity());
+                    break;
+                case R.id.radio_tl:
+                    mmkv.encode("set_tag_protocol", 4);
+                    AppUtils.reset(getActivity());
+                    break;
+
+            }
+        });
+    }
+
+    private void initListener() {
+        set_tl_tagType_box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mmkv.encode("set_tl_tagType", b);
+            }
+        });
+        set_tl_tagType_box.setChecked(mmkv.decodeBool("set_tl_tagType", false));
+        version_Layout.setOnClickListener(view -> {
+            View inflate = LayoutInflater.from(getActivity()).inflate(R.layout.qr_code_view, null);
+            ImageView serialNo_img = inflate.findViewById(R.id.serialNo_img);
+            TextView serialNo_text = inflate.findViewById(R.id.serialNo_text);
+            serialNo_text.setText(set_info_serialNo.getText());
+            serialNo_img.setImageBitmap(QrCodeUtils.getQrCode(set_info_serialNo.getText().toString()));
+
+            ImageView imei_img = inflate.findViewById(R.id.imei_img);
+            TextView mei_text = inflate.findViewById(R.id.imei_text);
+            DeviceManager deviceManager = new DeviceManager();
+            String imei1 = deviceManager.getIMEI(1);
+            Log.i("TAG", "IMEI1：" + imei1);
+            mei_text.setText(imei1);
+            imei_img.setImageBitmap(QrCodeUtils.getQrCode(imei1));
+
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                    .setTitle("QrCode")
+                    .setView(inflate)
+                    .create();
+            alertDialog.show();
+        });
+    }
+
+    public void initQuery() {
+        MsgBaseStop stop = new MsgBaseStop();
+        client.sendSynMsg(stop, 1500);
+        if (stop.getRtCode() == 0) {
+            infoQueryEvent();
+            powerQueryEvent();
+            baseQueryEvent();
+        }
+    }
+
+    @OnClick(R.id.power_query_btn)
+    public void powerQueryEvent() {
+        MsgBaseGetPower msg = new MsgBaseGetPower();
+        client.sendSynMsg(msg);
+        if (msg.getRtCode() == 0) {
+            set_power_spinner.setSelection(msg.getDicPower().get(1));
+        } else {
+            Toast.show(msg.getRtMsg());
+        }
+    }
+
+    @OnClick(R.id.power_set_btn)
+    public void powerSetEvent() {
+        MsgBaseSetPower msg = new MsgBaseSetPower();
+        Hashtable<Integer, Integer> hashtable = new Hashtable<>();
+        hashtable.put(1, set_power_spinner.getSelectedItemPosition());
+        msg.setDicPower(hashtable);
+        client.sendSynMsg(msg);
+        Toast.show(msg.getRtMsg());
+    }
+
+    @OnClick(R.id.base_query_btn)
+    public void baseQueryEvent() {
+        MsgBaseGetBaseband msg = new MsgBaseGetBaseband();
+        client.sendSynMsg(msg);
+        if (msg.getRtCode() == 0) {
+            switch (msg.getBaseSpeed()) {
+                case 255:
+                    set_base_speed.setSelection(12);
+                    break;
+                case 10:
+                    set_base_speed.setSelection(8);
+                    break;
+                case 11:
+                    set_base_speed.setSelection(9);
+                    break;
+                case 12:
+                    set_base_speed.setSelection(10);
+                    break;
+                case 13:
+                    set_base_speed.setSelection(11);
+                    break;
+                default:
+                    set_base_speed.setSelection(msg.getBaseSpeed());
+                    break;
+            }
+            set_base_session.setSelection(msg.getSession());
+            set_base_qValue.setSelection(msg.getqValue());
+            set_base_ab.setSelection(msg.getInventoryFlag());
+        } else {
+            Toast.show(msg.getRtMsg());
+        }
+    }
+
+    @OnClick(R.id.base_set_btn)
+    public void baseSetEvent() {
+        MsgBaseSetBaseband msg = new MsgBaseSetBaseband();
+        int speed = set_base_speed.getSelectedItemPosition();
+        switch (speed) {
+            case 12:
+                msg.setBaseSpeed(255);
+                break;
+            case 8:
+                msg.setBaseSpeed(10);
+                break;
+            case 9:
+                msg.setBaseSpeed(11);
+                break;
+            case 10:
+                msg.setBaseSpeed(12);
+                break;
+            case 11:
+                msg.setBaseSpeed(13);
+                break;
+            default:
+                msg.setBaseSpeed(speed);
+                break;
+        }
+        msg.setSession(set_base_session.getSelectedItemPosition());
+        msg.setqValue(set_base_qValue.getSelectedItemPosition());
+        msg.setInventoryFlag(set_base_ab.getSelectedItemPosition());
+        client.sendSynMsg(msg);
+        Toast.show(msg.getRtMsg());
+    }
+
+    public void infoQueryEvent() {
+        MsgAppGetBaseVersion getBaseVersion = new MsgAppGetBaseVersion();
+        client.sendSynMsg(getBaseVersion);
+        if (getBaseVersion.getRtCode() == 0) {
+            set_info_baseVersion.setText(getBaseVersion.getBaseVersions());
+        } else {
+            Toast.show(getBaseVersion.getRtMsg());
+        }
+
+        MsgAppGetReaderInfo getReaderInfo = new MsgAppGetReaderInfo();
+        client.sendSynMsg(getReaderInfo);
+        if (getReaderInfo.getRtCode() == 0) {
+            set_info_serialNo.setText(getReaderInfo.getReaderSerialNumber());
+            set_info_powerTime.setText(getReaderInfo.getFormatPowerOnTime());
+            set_info_baseCompareTime.setText(getReaderInfo.getBaseCompileTime());
+        } else {
+            Toast.show(getBaseVersion.getRtMsg());
+        }
+
+    }
+
+
+}

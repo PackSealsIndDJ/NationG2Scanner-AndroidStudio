@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".UpgradeActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bin:"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/bin_file_path"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/select_bin_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="..." />
+
+
+    </LinearLayout>
+
+    <com.daimajia.numberprogressbar.NumberProgressBar
+        android:id="@+id/upgradeBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:progress_current="0"
+        app:progress_max="100"
+
+        app:progress_reached_bar_height="20dp"
+        app:progress_reached_color="#3498DB"
+
+        app:progress_text_color="#3498DB"
+        app:progress_text_offset="2dp"
+        app:progress_text_size="23sp"
+        app:progress_text_visibility="visible"
+
+        app:progress_unreached_bar_height="12dp" />
+    <!--    app:progress_unreached_color="@color/color1"-->
+
+    <Button
+        android:id="@+id/upgrade_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/base_upgrade"
+        android:textAllCaps="false" />
+
+</LinearLayout>

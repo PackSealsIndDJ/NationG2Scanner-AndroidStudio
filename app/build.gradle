@@ -1,0 +1,65 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.pda.uhfdemo'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.pda.uhfdemo"
+        minSdk 21
+        targetSdk 33
+        versionCode 2
+        versionName "1.1.0-android13"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+//    buildFeatures {
+//        viewBinding true
+//    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+//    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+//    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-fragment:2.5.2'
+    implementation 'androidx.navigation:navigation-ui:2.5.2'
+    implementation files('libs/reader.jar')
+    implementation files('libs/SDK_Release_v202207131954.jar')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.11'
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'com.tencent:mmkv:1.3.0'
+    implementation 'com.github.zhiqiang-series.smart-show:toast:3.1.8'
+    implementation 'com.github.zhiqiang-series.smart-show:dialog:3.1.8'
+    implementation 'net.sourceforge.jexcelapi:jxl:2.6.12'
+    implementation 'cn.yipianfengye.android:zxing-library:2.2'
+    implementation 'com.daimajia.numberprogressbar:library:1.4@aar'
+    implementation 'me.weyye.hipermission:library:1.0.7'
+
+}

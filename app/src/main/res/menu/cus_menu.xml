@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_export"
+        android:title="@string/menu_export" />
+
+    <item
+        android:id="@+id/menu_frequency"
+        android:title="@string/menu_frequency_hopping" />
+
+    <item
+        android:id="@+id/menu_other"
+        android:title="@string/menu_other" />
+
+    <item
+        android:id="@+id/menu_standingWave"
+        android:title="@string/menu_standing_wave" />
+
+    <item
+        android:id="@+id/menu_upgrade"
+        android:title="@string/base_upgrade" />
+
+</menu>

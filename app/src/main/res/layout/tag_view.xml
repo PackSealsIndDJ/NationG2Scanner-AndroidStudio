@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tag_index"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:textSize="@dimen/text_size_16"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tag_epc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_16"
+       />
+
+
+    <TextView
+        android:id="@+id/tag_tid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_16"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tag_user"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_16"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tag_reserved"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_16"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tag_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3"
+        android:textSize="@dimen/text_size_16"
+        android:gravity="center" />
+
+
+</LinearLayout>

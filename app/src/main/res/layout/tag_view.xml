@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="56dp"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
 
     <TextView
         android:id="@+id/tag_index"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.2"
-        android:textSize="@dimen/text_size_16"
-        android:gravity="center" />
+        android:layout_weight="0.35"
+        android:gravity="center"
+        android:textColor="@color/muted_ink"
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/tag_epc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_16"
-       />
+        android:layout_weight="1.5"
+        android:fontFamily="monospace"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:ellipsize="middle"
+        android:textColor="@color/ink"
+        android:textSize="13sp" />
 
 
     <TextView
@@ -28,7 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="@dimen/text_size_16"
+        android:textColor="@color/ink"
+        android:textSize="13sp"
         android:visibility="gone" />
 
     <TextView
@@ -37,7 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="@dimen/text_size_16"
+        android:textColor="@color/ink"
+        android:textSize="13sp"
         android:visibility="gone" />
 
     <TextView
@@ -46,16 +56,19 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="@dimen/text_size_16"
+        android:textColor="@color/ink"
+        android:textSize="13sp"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/tag_count"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.3"
-        android:textSize="@dimen/text_size_16"
-        android:gravity="center" />
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:textColor="@color/ink"
+        android:textSize="13sp"
+        android:textStyle="bold" />
 
 
 </LinearLayout>

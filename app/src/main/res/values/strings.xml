@@ -13,9 +13,15 @@
     <string name="reserved">Reserved</string>
     <string name="tag_count">Count</string>
 
-    <string name="read_btn">Inventory</string>
-    <string name="stop_btn">Stop</string>
+    <string name="read_btn">Start scan</string>
+    <string name="stop_btn">Stop scan</string>
     <string name="clean_btn">Clear</string>
+    <string name="inventory_heading">Live inventory</string>
+    <string name="inventory_subtitle">Scan and verify RFID tags in real time</string>
+    <string name="inventory_total_label">UNIQUE TAGS</string>
+    <string name="inventory_speed_label">READ RATE</string>
+    <string name="inventory_time_label">SCAN TIME</string>
+    <string name="inventory_filter_hint">Enter tag value</string>
 
     <string name="tag_total">Total：</string>
     <string name="tag_speed">Speed：</string>

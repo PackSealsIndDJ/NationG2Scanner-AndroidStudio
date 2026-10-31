@@ -105,7 +105,8 @@ public class ScannerToolsActivity extends AppCompatActivity {
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_BARCODE && resultCode == Activity.RESULT_OK && data != null) {
-            String value = data.getStringExtra("codedContent");
+            String value = data.getStringExtra(com.uuzuche.lib_zxing.activity.CodeUtils.RESULT_STRING);
+            if (value == null || value.isEmpty()) value = data.getStringExtra("codedContent");
             if (value == null || value.isEmpty()) value = data.getStringExtra("SCAN_RESULT");
             if (value != null && !value.isEmpty()) { ScanBeep.play(); show("Barcode result", value); }
             else show("Barcode result", "No barcode was returned.");

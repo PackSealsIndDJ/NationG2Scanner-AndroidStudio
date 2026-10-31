@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setSupportActionBar(findViewById(R.id.toolbar));
         LocalManageUtil.saveSelectLanguage(this, 0);
         ButterKnife.bind(this);
         findViewById(R.id.open_scanner_tools).setOnClickListener(v ->

@@ -1,7 +1,6 @@
 package com.pda.uhfdemo;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -26,21 +25,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.pda.uhfdemo.scanner.BarcodeScannerManager;
+
 import java.util.Locale;
 
-/** Android 13 tools: camera barcode reader, NFC reader mode, one-shot GPS, and device details. */
+/** Android 13 tools: Nation G2 barcode reader, NFC reader mode, one-shot GPS, and device details. */
 public class ScannerToolsActivity extends AppCompatActivity {
-    private static final int REQUEST_CAMERA = 4101;
     private static final int REQUEST_LOCATION = 4102;
-    private static final int REQUEST_BARCODE = 4103;
-    private static final String[] ONE_D = {"UPC_A", "UPC_E", "EAN_8", "EAN_13", "CODE_39", "CODE_93", "CODE_128", "ITF", "RSS_14", "RSS_EXPANDED"};
-    private static final String[] TWO_D = {"QR_CODE", "DATA_MATRIX", "PDF_417", "AZTEC"};
 
     private TextView output;
     private NfcAdapter nfcAdapter;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private String[] pendingBarcodeFormats;
+    private BarcodeScannerManager barcodeScannerManager;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable locationTimeout = () -> show("GPS", "No GPS fix yet. Move outdoors and try again.");
 
@@ -49,6 +46,20 @@ public class ScannerToolsActivity extends AppCompatActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         buildUi();
+        barcodeScannerManager = new BarcodeScannerManager(this, new BarcodeScannerManager.Listener() {
+            @Override
+            public void onBarcodeResult(String value, String symbology) {
+                ScanBeep.play();
+                show("Barcode result", symbology.isEmpty() ? value : symbology + "\n" + value);
+            }
+
+            @Override
+            public void onError(String message, Throwable cause) {
+                show("Barcode scanner", message + (cause == null || cause.getMessage() == null
+                        ? "" : "\n" + cause.getMessage()));
+            }
+        });
+        barcodeScannerManager.initialize();
     }
 
     private void buildUi() {
@@ -59,8 +70,8 @@ public class ScannerToolsActivity extends AppCompatActivity {
         LinearLayout column = new LinearLayout(this);
         column.setOrientation(LinearLayout.VERTICAL);
         scroll.addView(column);
-        addButton(column, "Scan 1D barcode", v -> launchBarcode(ONE_D));
-        addButton(column, "Scan 2D barcode", v -> launchBarcode(TWO_D));
+        addButton(column, "Scan 1D barcode", v -> launchBarcode(BarcodeScannerManager.ScanMode.ONE_D));
+        addButton(column, "Scan 2D barcode", v -> launchBarcode(BarcodeScannerManager.ScanMode.TWO_D));
         addButton(column, "Read NFC tag", v -> show("NFC", nfcAdapter == null ? "This device has no NFC adapter." : nfcAdapter.isEnabled() ? "NFC is ready. Hold an NFC tag near the handheld." : "NFC is present but turned off. Enable NFC in Android Settings."));
         addButton(column, "Get GPS location", v -> requestGps());
         addButton(column, "Nation G2 device info", v -> show("Device information", deviceInfo()));
@@ -81,47 +92,26 @@ public class ScannerToolsActivity extends AppCompatActivity {
         parent.addView(button, new LinearLayout.LayoutParams(-1, -2));
     }
 
-    private void launchBarcode(String[] formats) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            pendingBarcodeFormats = formats;
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
-            return;
-        }
-        try {
-            Intent scan = new Intent(this, com.uuzuche.lib_zxing.activity.CaptureActivity.class);
-            scan.putExtra("SCAN_FORMATS", join(formats));
-            startActivityForResult(scan, REQUEST_BARCODE);
-        } catch (Exception e) {
-            show("Barcode scanner", "Scanner could not start: " + e.getMessage());
+    private void launchBarcode(BarcodeScannerManager.ScanMode mode) {
+        if (barcodeScannerManager != null && barcodeScannerManager.startScanning(mode)) {
+            output.setText(mode == BarcodeScannerManager.ScanMode.ONE_D
+                    ? "Scanning 1D barcodes. Press a scanner trigger to scan."
+                    : "Scanning 2D barcodes. Press a scanner trigger to scan.");
         }
     }
 
     private String join(String[] values) {
         StringBuilder result = new StringBuilder();
-        for (String value : values) { if (result.length() > 0) result.append(','); result.append(value); }
-        return result.toString();
-    }
-
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_BARCODE && resultCode == Activity.RESULT_OK && data != null) {
-            String value = data.getStringExtra(com.uuzuche.lib_zxing.activity.CodeUtils.RESULT_STRING);
-            if (value == null || value.isEmpty()) value = data.getStringExtra("codedContent");
-            if (value == null || value.isEmpty()) value = data.getStringExtra("SCAN_RESULT");
-            if (value != null && !value.isEmpty()) { ScanBeep.play(); show("Barcode result", value); }
-            else show("Barcode result", "No barcode was returned.");
+        for (String value : values) {
+            if (result.length() > 0) result.append(", ");
+            result.append(value);
         }
+        return result.toString();
     }
 
     @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            String[] formats = pendingBarcodeFormats;
-            pendingBarcodeFormats = null;
-            if (formats != null) launchBarcode(formats);
-        } else if (requestCode == REQUEST_CAMERA) {
-            show("Barcode scanner", "Camera permission was denied.");
-        } else if (requestCode == REQUEST_LOCATION) {
+        if (requestCode == REQUEST_LOCATION) {
             boolean locationGranted = false;
             for (int result : grantResults) locationGranted |= result == PackageManager.PERMISSION_GRANTED;
             if (locationGranted) requestGps();
@@ -177,10 +167,19 @@ public class ScannerToolsActivity extends AppCompatActivity {
     }
 
     @Override protected void onPause() {
+        if (barcodeScannerManager != null) barcodeScannerManager.pause();
         if (nfcAdapter != null) nfcAdapter.disableReaderMode(this);
         if (locationListener != null) { locationManager.removeUpdates(locationListener); locationListener = null; }
         handler.removeCallbacks(locationTimeout);
         super.onPause();
+    }
+
+    @Override protected void onDestroy() {
+        if (barcodeScannerManager != null) {
+            barcodeScannerManager.release();
+            barcodeScannerManager = null;
+        }
+        super.onDestroy();
     }
 
     private String deviceInfo() {

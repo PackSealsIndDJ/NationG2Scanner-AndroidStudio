@@ -8,7 +8,7 @@ Android Studio project based on the supplied Nation G2 UHF reader demo and SDK. 
 - **EPC and TID:** EPC inventory is available by default. Enable TID in the Reader Settings tab to read and show TID alongside EPC. The vendor API inventories EPC and reads TID memory as an additional bank.
 - **Tag operations:** Read, write, lock, kill, and RF/frequency configuration use the vendor demo flows and `reader.jar` SDK.
 - **Scan beep:** A short confirmation tone plays for each valid tag callback during inventory, plus successful barcode and NFC reads.
-- **1D and 2D barcode:** Open **Barcode · NFC · GPS · About** and choose 1D or 2D. The camera scanner uses the bundled ZXing library and requests camera permission at runtime.
+- **1D and 2D barcode:** Open **Scanner tools** and choose 1D or 2D. The Nation G2 ScanManager SDK controls the integrated hardware decoder and reports barcode results through managed callbacks; no camera permission is needed.
 - **NFC:** Reader mode displays the tag ID and technologies when an NFC tag is held near the device. Requires NFC hardware, if present on the handheld.
 - **GPS:** Requests Android location permission and reads a recent or fresh GPS/network location fix. Requires location hardware/services and permission.
 - **Hardware info:** Shows Android build fields, manufacturer/model, ABI, NFC/GPS/camera availability, bundled UHF SDK, and vendor trigger key mapping.
@@ -22,4 +22,4 @@ Use **Reader Settings** to enable TID before choosing a scan. Use only test tags
 
 ## Device and validation notes
 
-This project retains the vendor's firmware-upgrade and export flows. Confirm those flows on Android 13 because the vendor sample predates scoped storage. The Single inventory window and scanner trigger mapping should also be checked on the exact G2 model/firmware. No Android build or on-device run was performed in this update, so compatibility with that handheld has not been physically verified.
+This project retains the vendor's firmware-upgrade and export flows. Confirm those flows on Android 13 because the vendor sample predates scoped storage. The Single inventory window and scanner trigger mapping should also be checked on the exact G2 model/firmware. The scanner SDK jar is compile-only: the runtime scanner service must be provided by the Nation G2 firmware. Physical hardware compatibility should be verified on the target handheld.

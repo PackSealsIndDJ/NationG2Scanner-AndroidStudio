@@ -15,6 +15,7 @@ import com.gg.reader.api.protocol.gx.MsgBaseStop;
 import com.gg.reader.api.protocol.gx.MsgTestCarrierWave;
 import com.gg.reader.api.protocol.gx.MsgTestVSWRcheck;
 import com.gg.reader.api.utils.FrequencyUtils;
+import com.pda.uhfdemo.utils.FrequencyRange;
 import com.pda.uhfdemo.utils.GlobalClient;
 import com.pda.uhfdemo.utils.Toast;
 
@@ -58,7 +59,6 @@ public class StandingWaveActivity extends AppCompatActivity {
         MsgBaseGetFreqRange msg = new MsgBaseGetFreqRange();
         client.sendSynMsg(msg);
         if (msg.getRtCode() == 0) {
-            set_frequency_spinner.setSelection(msg.getFreqRangeIndex());
             ArrayAdapter<String> freAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, FrequencyUtils.indexGetFre(msg.getFreqRangeIndex()));
             point_spinner.setAdapter(freAdapter);
         } else {
@@ -69,7 +69,7 @@ public class StandingWaveActivity extends AppCompatActivity {
     @OnClick(R.id.frequency_set_btn)
     public void frequencySetEvent() {
         MsgBaseSetFreqRange msg = new MsgBaseSetFreqRange();
-        msg.setFreqRangeIndex(set_frequency_spinner.getSelectedItemPosition());
+        msg.setFreqRangeIndex(FrequencyRange.ETS_866_868_INDEX);
         client.sendSynMsg(msg);
         if (msg.getRtCode() == 0) {
             ArrayAdapter<String> freAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, FrequencyUtils.indexGetFre(msg.getFreqRangeIndex()));

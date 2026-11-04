@@ -20,6 +20,7 @@ import com.gg.reader.api.protocol.gx.MsgBaseSetFrequency;
 import com.gg.reader.api.protocol.gx.MsgBaseStop;
 import com.gg.reader.api.utils.FrequencyUtils;
 import com.pda.uhfdemo.adapter.FrequencyAdapter;
+import com.pda.uhfdemo.utils.FrequencyRange;
 import com.pda.uhfdemo.utils.GlobalClient;
 import com.pda.uhfdemo.utils.Toast;
 
@@ -78,7 +79,6 @@ public class FrequencyActivity extends AppCompatActivity {
         MsgBaseGetFreqRange msg = new MsgBaseGetFreqRange();
         client.sendSynMsg(msg);
         if (msg.getRtCode() == 0) {
-            set_frequency_spinner.setSelection(msg.getFreqRangeIndex());
             frequencyList.clear();
             List<String> pointList = FrequencyUtils.indexGetFre(msg.getFreqRangeIndex());
             for (String point : pointList) {
@@ -93,7 +93,7 @@ public class FrequencyActivity extends AppCompatActivity {
     @OnClick(R.id.frequency_set_btn)
     public void frequencySetEvent() {
         MsgBaseSetFreqRange msg = new MsgBaseSetFreqRange();
-        msg.setFreqRangeIndex(set_frequency_spinner.getSelectedItemPosition());
+        msg.setFreqRangeIndex(FrequencyRange.ETS_866_868_INDEX);
         client.sendSynMsg(msg);
         if (msg.getRtCode() == 0) {
             frequencyList.clear();

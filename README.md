@@ -8,7 +8,7 @@ Android Studio project based on the supplied Nation G2 UHF reader demo and SDK. 
 - **EPC and TID:** EPC inventory is available by default. Enable TID in the Reader Settings tab to read and show TID alongside EPC. The vendor API inventories EPC and reads TID memory as an additional bank.
 - **Tag operations:** Read, write, lock, kill, and RF/frequency configuration use the vendor demo flows and `reader.jar` SDK.
 - **Scan beep:** A short confirmation tone plays for each valid tag callback during inventory, plus successful barcode and NFC reads.
-- **1D and 2D barcode:** Open **Scanner tools** and choose 1D or 2D. The Nation G2 ScanManager SDK controls the integrated hardware decoder and reports barcode results through managed callbacks; no camera permission is needed.
+- **1D and 2D barcode:** Open **Scanner tools** and choose either camera scan option. The camera reader recognizes common 1D barcodes, QR codes, and Data Matrix codes, requests camera permission when needed, and displays the decoded value.
 - **NFC:** Reader mode displays the tag ID and technologies when an NFC tag is held near the device. Requires NFC hardware, if present on the handheld.
 - **GPS:** Requests Android location permission and reads a recent or fresh GPS/network location fix. Requires location hardware/services and permission.
 - **Hardware info:** Shows Android build fields, manufacturer/model, ABI, NFC/GPS/camera availability, bundled UHF SDK, and vendor trigger key mapping.

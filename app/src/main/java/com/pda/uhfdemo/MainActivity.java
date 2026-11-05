@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //判断显示那个Fragment
+    //Fragment
     private void showFragment(Fragment show, Fragment hide) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (show != hide) transaction.hide(hide).show(show).commitAllowingStateLoss();
@@ -410,6 +410,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.e("===============", keyCode + "");
+        if (keyCode == 619 && event.getRepeatCount() > 0) {
+            return true;
+        }
         if (selectedId == 0) {
             int tagProtocol = mmkv.decodeInt("set_tag_protocol", 0);
             switch (tagProtocol) {
@@ -433,6 +436,9 @@ public class MainActivity extends AppCompatActivity {
                     ReadFragmentTL readFragmentTL = (ReadFragmentTL) fragments.get(0);
                     readFragmentTL.onKeyDown(keyCode);
                     break;
+            }
+            if (keyCode == 619) {
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);

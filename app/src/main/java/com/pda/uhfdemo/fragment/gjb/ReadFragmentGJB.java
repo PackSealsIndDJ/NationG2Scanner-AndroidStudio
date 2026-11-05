@@ -301,11 +301,14 @@ public class ReadFragmentGJB extends Fragment {
         client.onTagGJbLog = new HandlerTagGJbLog() {
             @Override
             public void log(String s, LogBaseGJbInfo logBaseGJbInfo) {
+                if (!inventoryRunning) return;
                 if (logBaseGJbInfo.getResult() == 0) {
                     synchronized (tagMap) {
+                        if (!inventoryRunning || (singleScanActive && singleTagCaptured)) return;
+                        if (singleScanActive) singleTagCaptured = true;
                         processTag(logBaseGJbInfo);
                     }
-
+                    if (singleScanActive) stopAfterFirstTag();
                 }
             }
         };
@@ -346,7 +349,7 @@ public class ReadFragmentGJB extends Fragment {
             tagInfo.setType("GJB");
             tagInfo.setEpc(logBaseGJbInfo.getEpc());
             tagInfo.setTid(logBaseGJbInfo.getTid());
-            tagInfo.setUserData(logBaseGJbInfo.getUserdata());
+            tagInfo.setUserData(singleScanActive ? "" : logBaseGJbInfo.getUserdata());
             tagInfo.setCount(1);
             tagInfo.setReadTime(new Date());
             tagMap.put(key, tagInfo);
@@ -355,6 +358,9 @@ public class ReadFragmentGJB extends Fragment {
     }
 
     Timer timer;
+    private volatile boolean inventoryRunning;
+    private volatile boolean singleScanActive;
+    private volatile boolean singleTagCaptured;
     long time = 0;
     int speed = 0;
 
@@ -384,15 +390,18 @@ public class ReadFragmentGJB extends Fragment {
 
     @OnClick(R.id.inventory_btn)
     public void inventoryEvent() {
-        if (inventory_btn.getText().equals(getString(R.string.read_btn))) {
-            cleanEvent();
+        if (!inventoryRunning) {
+            boolean singleMode = mmkv.decodeBool("scan_single_mode", false);
+            if (!singleMode) cleanEvent();
             onTagCallback();
             client.sendUnsynMsg(new MsgBaseStop());
             MsgBaseInventoryGJb msg = new MsgBaseInventoryGJb();
             msg.setAntennaEnable(EnumG.AntennaNo_1);
-            msg.setInventoryMode(mmkv.decodeBool("scan_single_mode", false) ? EnumG.InventoryMode_Single : EnumG.InventoryMode_Inventory);
+            msg.setInventoryMode(singleMode ? EnumG.InventoryMode_Single : EnumG.InventoryMode_Inventory);
+            singleScanActive = singleMode;
+            singleTagCaptured = false;
 
-            if (mmkv.decodeBool("set_tid_box")) {
+            if (singleMode || mmkv.decodeBool("set_tid_box")) {
                 int set_tid_mode = mmkv.decodeInt("set_tid_mode", 0);
                 String set_tid_len = mmkv.decodeString("set_tid_len", "6");
                 msg.setReadTid(new ParamEpcReadTid(set_tid_mode, Integer.parseInt(set_tid_len)));
@@ -403,7 +412,7 @@ public class ReadFragmentGJB extends Fragment {
                 tagAdapter.setShowTid(false);
             }
 
-            if (mmkv.decodeBool("set_user_box")) {
+            if (!singleMode && mmkv.decodeBool("set_user_box")) {
                 String set_user_start = mmkv.decodeString("set_user_start", "0");
                 String set_user_len = mmkv.decodeString("set_user_len", "2");
                 msg.setReadUserdata(new ParamEpcReadUserdata(Integer.parseInt(set_user_start), Integer.parseInt(set_user_len)));
@@ -424,33 +433,50 @@ public class ReadFragmentGJB extends Fragment {
                 filter.setHexData(content);
                 msg.setFilter(filter);
             }
+            inventoryRunning = true;
             client.sendSynMsg(msg);
             if (msg.getRtCode() == 0) {
-                readTimer();
-                inventory_btn.setText(getString(R.string.stop_btn));
-                if (mmkv.decodeBool("scan_single_mode", false)) {
-                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                        client.sendUnsynMsg(new MsgBaseStop());
-                        if (timer != null) { timer.cancel(); timer = null; }
-                        inventory_btn.setText(getString(R.string.read_btn));
-                    }, 1200);
+                if (!singleMode) readTimer();
+                if (inventoryRunning) {
+                    inventory_btn.setText(getString(R.string.stop_btn));
+                } else {
+                    inventory_btn.setText(getString(R.string.read_btn));
                 }
             } else {
+                inventoryRunning = false;
+                singleScanActive = false;
                 Toast.show(msg.getRtMsg());
             }
         } else {
+            boolean wasRunning = inventoryRunning;
+            inventoryRunning = false;
             MsgBaseStop stop = new MsgBaseStop();
             client.sendSynMsg(stop);
             if (stop.getRtCode() == 0) {
+                singleScanActive = false;
                 if (timer != null) {
                     timer.cancel();
                     timer = null;
                 }
                 inventory_btn.setText(getString(R.string.read_btn));
             } else {
+                inventoryRunning = wasRunning;
                 Toast.show(stop.getRtMsg());
             }
         }
+    }
+
+    private void stopAfterFirstTag() {
+        if (!inventoryRunning) return;
+        inventoryRunning = false;
+        client.sendUnsynMsg(new MsgBaseStop());
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        handler.post(() -> {
+            if (inventory_btn != null) inventory_btn.setText(getString(R.string.read_btn));
+        });
     }
 
     @OnClick(R.id.inventory_clean)
@@ -499,6 +525,3 @@ public class ReadFragmentGJB extends Fragment {
 
 
 }
-
-
-

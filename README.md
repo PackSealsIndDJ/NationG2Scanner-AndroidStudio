@@ -4,7 +4,7 @@ Android Studio project based on the supplied Nation G2 UHF reader demo and SDK. 
 
 ## Implemented features
 
-- **UHF scan mode:** The top bar selects **Single** or **Bulk**. The mode applies to the handheld trigger (vendor demo key code `619`) and the on-screen Inventory button. Single mode uses the vendor SDK's `InventoryMode_Single` and issues a stop after the one-shot window; Bulk uses continuous inventory until stopped.
+- **UHF scan mode:** The top bar selects **Single** or **Bulk**. In Single mode, each hardware-trigger press starts an EPC inventory, reads EPC plus TID only, accepts the first tag, and immediately sends a stop command. Results accumulate across trigger presses; repeat events while holding the trigger and later callbacks within a scan are ignored. Bulk mode continues inventory until stopped. EPC + TID single scans require an EPC-capable tag protocol; 6B tags do not provide an EPC.
 - **EPC and TID:** EPC inventory is available by default. Enable TID in the Reader Settings tab to read and show TID alongside EPC. The vendor API inventories EPC and reads TID memory as an additional bank.
 - **Tag operations:** Read, write, lock, kill, and RF/frequency configuration use the vendor demo flows and `reader.jar` SDK.
 - **Scan beep:** A short confirmation tone plays for each valid tag callback during inventory, plus successful barcode and NFC reads.

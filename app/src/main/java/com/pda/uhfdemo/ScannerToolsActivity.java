@@ -60,8 +60,8 @@ public class ScannerToolsActivity extends AppCompatActivity {
         LinearLayout column = new LinearLayout(this);
         column.setOrientation(LinearLayout.VERTICAL);
         scroll.addView(column);
-        addButton(column, "Scan 1D barcode with camera", v -> launchCameraScanner());
-        addButton(column, "Scan 2D barcode with camera", v -> launchCameraScanner());
+        addButton(column, "Scan 1D barcode", v -> launchCameraScanner());
+        addButton(column, "Scan 2D barcode", v -> launchCameraScanner());
         addButton(column, "Read NFC tag", v -> show("NFC", nfcAdapter == null ? "This device has no NFC adapter." : nfcAdapter.isEnabled() ? "NFC is ready. Hold an NFC tag near the handheld." : "NFC is present but turned off. Enable NFC in Android Settings."));
         addButton(column, "Get GPS location", v -> requestGps());
         addButton(column, "Nation G2 device info", v -> show("Device information", deviceInfo()));

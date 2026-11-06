@@ -29,6 +29,8 @@ import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /** Android 13 tools: Nation G2 barcode reader, NFC reader mode, one-shot GPS, and device details. */
@@ -36,13 +38,21 @@ public class ScannerToolsActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION = 4102;
     private static final int REQUEST_CAMERA = 4103;
     private static final int REQUEST_BARCODE_SCAN = 4104;
+    private static final long LOCATION_TIMEOUT_MS = 60000;
+    private static final long FRESH_LOCATION_AGE_MS = 30000;
+    private static final long MAX_CACHED_LOCATION_AGE_MS = 120000;
 
     private TextView output;
     private NfcAdapter nfcAdapter;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private Location bestLocation;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private final Runnable locationTimeout = () -> show("GPS", "No GPS fix yet. Move outdoors and try again.");
+    private final Runnable locationTimeout = () -> {
+        stopLocationUpdates();
+        if (bestLocation != null) showLocation(bestLocation);
+        else show("GPS", "No location fix yet. Move outdoors and try again.");
+    };
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,27 +155,84 @@ public class ScannerToolsActivity extends AppCompatActivity {
             return;
         }
         try {
-            String provider = fineGranted ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
-            if (!locationManager.isProviderEnabled(provider)) {
-                show("Location", "Location services are turned off. Enable Location in Android Settings and try again.");
+            stopLocationUpdates();
+            handler.removeCallbacks(locationTimeout);
+            bestLocation = null;
+
+            List<String> providers = new ArrayList<>();
+            if (fineGranted && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                providers.add(LocationManager.GPS_PROVIDER);
+            }
+            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                providers.add(LocationManager.NETWORK_PROVIDER);
+            }
+            if (providers.isEmpty()) {
+                show("GPS", "No location provider is enabled. Turn on Location in Android Settings and try again.");
                 startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 return;
             }
-            Location last = locationManager.getLastKnownLocation(provider);
-            if (last != null && System.currentTimeMillis() - last.getTime() < 120000) { showLocation(last); return; }
-            show("GPS", "Waiting up to 20 seconds for a GPS fix…");
+
+            long now = System.currentTimeMillis();
+            for (String provider : providers) {
+                Location last = locationManager.getLastKnownLocation(provider);
+                if (isRecentLocation(last, now, MAX_CACHED_LOCATION_AGE_MS)
+                        && isBetterLocation(last, bestLocation)) {
+                    bestLocation = last;
+                }
+            }
+            if (isRecentLocation(bestLocation, now, FRESH_LOCATION_AGE_MS)
+                    && (!fineGranted
+                    || LocationManager.GPS_PROVIDER.equals(bestLocation.getProvider())
+                    || (bestLocation.hasAccuracy() && bestLocation.getAccuracy() <= 50))) {
+                showLocation(bestLocation);
+                return;
+            }
+
+            show("GPS", "Waiting up to 60 seconds for a location fix…");
             locationListener = new LocationListener() {
-                @Override public void onLocationChanged(@NonNull Location location) { locationManager.removeUpdates(this); handler.removeCallbacks(locationTimeout); showLocation(location); }
+                @Override public void onLocationChanged(@NonNull Location location) {
+                    if (isBetterLocation(location, bestLocation)) {
+                        bestLocation = location;
+                        showLocation(bestLocation);
+                    }
+                    if (LocationManager.GPS_PROVIDER.equals(location.getProvider())
+                            && location.hasAccuracy() && location.getAccuracy() <= 50) {
+                        stopLocationUpdates();
+                        handler.removeCallbacks(locationTimeout);
+                    }
+                }
             };
-            locationManager.requestLocationUpdates(provider, 0, 0, locationListener, Looper.getMainLooper());
-            handler.removeCallbacks(locationTimeout);
-            handler.postDelayed(() -> { if (locationListener != null) { locationManager.removeUpdates(locationListener); locationListener = null; locationTimeout.run(); } }, 20000);
+            for (String provider : providers) {
+                locationManager.requestLocationUpdates(provider, 1000, 0, locationListener, Looper.getMainLooper());
+            }
+            handler.postDelayed(locationTimeout, LOCATION_TIMEOUT_MS);
         } catch (SecurityException e) { show("GPS", "Location permission is required."); }
         catch (Exception e) { show("GPS", "Could not read GPS: " + e.getMessage()); }
     }
 
+    private boolean isRecentLocation(Location location, long now, long maxAge) {
+        return location != null && now - location.getTime() >= 0 && now - location.getTime() <= maxAge;
+    }
+
+    private boolean isBetterLocation(Location candidate, Location current) {
+        if (current == null) return true;
+        if (!candidate.hasAccuracy()) return false;
+        return !current.hasAccuracy() || candidate.getAccuracy() < current.getAccuracy();
+    }
+
+    private void stopLocationUpdates() {
+        if (locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+            locationListener = null;
+        }
+    }
+
     private void showLocation(Location location) {
-        show("GPS location", String.format(Locale.US, "Latitude: %.6f\nLongitude: %.6f\nAccuracy: %.1f m\nTime: %tF %tT", location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.getTime(), location.getTime()));
+        String accuracy = location.hasAccuracy()
+                ? String.format(Locale.US, "%.1f m", location.getAccuracy())
+                : "unknown";
+        show("GPS location", String.format(Locale.US, "Latitude: %.6f\nLongitude: %.6f\nAccuracy: %s\nSource: %s\nTime: %tF %tT",
+                location.getLatitude(), location.getLongitude(), accuracy, location.getProvider(), location.getTime(), location.getTime()));
     }
 
     @Override protected void onResume() {
@@ -186,7 +253,7 @@ public class ScannerToolsActivity extends AppCompatActivity {
 
     @Override protected void onPause() {
         if (nfcAdapter != null) nfcAdapter.disableReaderMode(this);
-        if (locationListener != null) { locationManager.removeUpdates(locationListener); locationListener = null; }
+        stopLocationUpdates();
         handler.removeCallbacks(locationTimeout);
         super.onPause();
     }

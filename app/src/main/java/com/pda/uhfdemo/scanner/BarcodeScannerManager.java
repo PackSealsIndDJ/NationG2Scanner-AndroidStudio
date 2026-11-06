@@ -55,6 +55,7 @@ public final class BarcodeScannerManager {
     private boolean scannerOpen;
     private boolean decoding;
     private ScanMode activeMode;
+    private ScanMode configuredMode;
 
     public BarcodeScannerManager(Context context, Listener listener) {
         this.appContext = context.getApplicationContext();
@@ -101,9 +102,24 @@ public final class BarcodeScannerManager {
             if (scanManager.isScannerConflicted()) {
                 return reportError("The barcode scanner is in use by another application.", null);
             }
+            if (decoding && activeMode == mode) {
+                return true;
+            }
             if (decoding && activeMode != mode && !stopScanning()) {
                 return false;
             }
+
+            if (scannerOpen && configuredMode != mode) {
+                closeScanner();
+                disconnectDecoder();
+            }
+
+            boolean oneDimensional = mode == ScanMode.ONE_D;
+            scanManager.enableSYM1D(oneDimensional);
+            scanManager.enableSYM2D(!oneDimensional);
+            scanManager.setBroadcastAction(ACTION_BARCODE_RESULT);
+            scanManager.setBroadcastKey(ScanConfig.BARCODE_DATA);
+            configuredMode = mode;
 
             if (!decoderConnected) {
                 scanManager.DecoderConnect();
@@ -116,12 +132,6 @@ public final class BarcodeScannerManager {
                     return reportError("Could not open the Nation G2 barcode scanner.", null);
                 }
             }
-
-            boolean oneDimensional = mode == ScanMode.ONE_D;
-            scanManager.enableSYM1D(oneDimensional);
-            scanManager.enableSYM2D(!oneDimensional);
-            scanManager.setBroadcastAction(ACTION_BARCODE_RESULT);
-            scanManager.setBroadcastKey(ScanConfig.BARCODE_DATA);
 
             if (!decoding) {
                 decoding = scanManager.startDecode();
@@ -273,6 +283,7 @@ public final class BarcodeScannerManager {
             reportError("Could not close the Nation G2 barcode scanner.", error);
         } finally {
             scannerOpen = false;
+            configuredMode = null;
         }
     }
 

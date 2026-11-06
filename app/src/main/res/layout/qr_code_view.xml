@@ -10,7 +10,7 @@
         android:id="@+id/serialNo_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/uhf_logo" />
+        android:src="@drawable/packsealsg2_uhf" />
 
 
     <LinearLayout
@@ -37,7 +37,7 @@
         android:id="@+id/imei_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/uhf_logo" />
+        android:src="@drawable/packsealsg2_uhf" />
 
     <LinearLayout
         android:layout_width="match_parent"

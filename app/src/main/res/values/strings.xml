@@ -213,17 +213,7 @@
     </string-array>
 
     <string-array name="setting_frequent">
-        <item>Gb920_925</item>
-        <item>Gb840_845</item>
-        <item>Gb840_845_920_925</item>
-        <item>FCC902_928</item>
         <item>ETS|866_868</item>
-        <item>JP916_8_920_4</item>
-        <item>TW922_25_927_75</item>
-        <item>ID923_125_925_125</item>
-        <item>RUS866_6_867_4</item>
-        <item>TEST</item>
-        <item>JP_LBT,916.8~920.8MHz</item>
     </string-array>
 
     <string-array name="write_area">

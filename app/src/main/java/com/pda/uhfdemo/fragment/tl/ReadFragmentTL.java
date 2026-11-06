@@ -286,9 +286,13 @@ public class ReadFragmentTL extends Fragment {
         client.onTagTLog = new HandlerTagTLLog() {
             @Override
             public void log(String s, LogBaseTLInfo logBaseTLInfo) {
+                if (!inventoryRunning) return;
                 synchronized (tagMap) {
+                    if (!inventoryRunning || (singleScanActive && singleTagCaptured)) return;
+                    if (singleScanActive) singleTagCaptured = true;
                     processTag(logBaseTLInfo);
                 }
+                if (singleScanActive) stopAfterFirstTag();
             }
         };
         client.onTagTLOver = new HandlerTagTLOver() {
@@ -336,6 +340,9 @@ public class ReadFragmentTL extends Fragment {
     }
 
     Timer timer;
+    private volatile boolean inventoryRunning;
+    private volatile boolean singleScanActive;
+    private volatile boolean singleTagCaptured;
     long time = 0;
     int speed = 0;
 
@@ -365,8 +372,9 @@ public class ReadFragmentTL extends Fragment {
 
     @OnClick(R.id.inventory_btn)
     public void inventoryEvent() {
-        if (inventory_btn.getText().equals(getString(R.string.read_btn))) {
-            cleanEvent();
+        if (!inventoryRunning) {
+            boolean singleMode = mmkv.decodeBool("scan_single_mode", false);
+            if (!singleMode) cleanEvent();
             onTagCallback();
             client.sendUnsynMsg(new MsgBaseStop());
             MsgBaseInventoryTL msg = new MsgBaseInventoryTL();
@@ -374,37 +382,60 @@ public class ReadFragmentTL extends Fragment {
                 msg.setTagType(EnumG.TL_FM0);
             }
             msg.setAntennaEnable(EnumG.AntennaNo_1);
-            msg.setInventoryMode(mmkv.decodeBool("scan_single_mode", false) ? EnumG.InventoryMode_Single : EnumG.InventoryMode_Inventory);
+            msg.setInventoryMode(singleMode ? EnumG.InventoryMode_Single : EnumG.InventoryMode_Inventory);
+            singleScanActive = singleMode;
+            singleTagCaptured = false;
 
             tagAdapter.setShowTid(true);
+            if (singleMode) {
+                tagAdapter.setShowUser(false);
+                tagAdapter.setShowReserved(false);
+            }
 
+            inventoryRunning = true;
             client.sendSynMsg(msg);
             if (msg.getRtCode() == 0) {
-                readTimer();
-                inventory_btn.setText(getString(R.string.stop_btn));
-                if (mmkv.decodeBool("scan_single_mode", false)) {
-                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                        client.sendUnsynMsg(new MsgBaseStop());
-                        if (timer != null) { timer.cancel(); timer = null; }
-                        inventory_btn.setText(getString(R.string.read_btn));
-                    }, 1200);
+                if (!singleMode) readTimer();
+                if (inventoryRunning) {
+                    inventory_btn.setText(getString(R.string.stop_btn));
+                } else {
+                    inventory_btn.setText(getString(R.string.read_btn));
                 }
             } else {
+                inventoryRunning = false;
+                singleScanActive = false;
                 Toast.show(msg.getRtMsg());
             }
         } else {
+            boolean wasRunning = inventoryRunning;
+            inventoryRunning = false;
             MsgBaseStop stop = new MsgBaseStop();
             client.sendSynMsg(stop);
             if (stop.getRtCode() == 0) {
+                singleScanActive = false;
                 if (timer != null) {
                     timer.cancel();
                     timer = null;
                 }
                 inventory_btn.setText(getString(R.string.read_btn));
             } else {
+                inventoryRunning = wasRunning;
                 Toast.show(stop.getRtMsg());
             }
         }
+    }
+
+    private void stopAfterFirstTag() {
+        if (!inventoryRunning) return;
+        inventoryRunning = false;
+        client.sendUnsynMsg(new MsgBaseStop());
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        handler.post(() -> {
+            if (inventory_btn != null) inventory_btn.setText(getString(R.string.read_btn));
+        });
     }
 
 
@@ -454,6 +485,3 @@ public class ReadFragmentTL extends Fragment {
 
 
 }
-
-
-

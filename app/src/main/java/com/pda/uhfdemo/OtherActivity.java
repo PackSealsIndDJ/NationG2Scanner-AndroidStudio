@@ -25,6 +25,7 @@ import com.gg.reader.api.protocol.gx.MsgTestCarrierWave;
 import com.gg.reader.api.protocol.gx.MsgTestVSWRcheck;
 import com.gg.reader.api.utils.FrequencyUtils;
 import com.gg.reader.api.utils.StringUtils;
+import com.pda.uhfdemo.utils.FrequencyRange;
 import com.pda.uhfdemo.utils.GlobalClient;
 import com.pda.uhfdemo.utils.LocalManageUtil;
 import com.pda.uhfdemo.utils.Toast;
@@ -112,9 +113,7 @@ public class OtherActivity extends AppCompatActivity {
     public void frequencyQueryEvent() {
         MsgBaseGetFreqRange msg = new MsgBaseGetFreqRange();
         client.sendSynMsg(msg);
-        if (msg.getRtCode() == 0) {
-            set_frequency_spinner.setSelection(msg.getFreqRangeIndex());
-        } else {
+        if (msg.getRtCode() != 0) {
             Toast.show(msg.getRtMsg());
         }
     }
@@ -122,7 +121,7 @@ public class OtherActivity extends AppCompatActivity {
     @OnClick(R.id.frequency_set_btn)
     public void frequencySetEvent() {
         MsgBaseSetFreqRange msg = new MsgBaseSetFreqRange();
-        msg.setFreqRangeIndex(set_frequency_spinner.getSelectedItemPosition());
+        msg.setFreqRangeIndex(FrequencyRange.ETS_866_868_INDEX);
         client.sendSynMsg(msg);
         Toast.show(msg.getRtMsg());
 
